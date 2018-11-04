@@ -1,5 +1,5 @@
 from scheduler import Scheduler
-
+from plotter import ProcessesPlotter
 
 class CircularQueue:
 	def __init__(self):
@@ -46,8 +46,8 @@ class RoundRobin(Scheduler):
 
 	def schedule(self):
 		num_processes = len(self.processes)
-		if num_processes == 0:
-			return []
+		if num_processes == 0 or self.quantum == 0:
+			return [], []
 
 		final_processes = []
 		detailed_processing = []
@@ -92,7 +92,7 @@ class RoundRobin(Scheduler):
 
 
 if __name__ == "__main__":
-	roundrobin = RoundRobin(3, 0.5)
+	roundrobin = RoundRobin(5, 3)
 	roundrobin.read_processes()
 	processes, details = roundrobin.schedule()
 	outfile = open('scheduled_processes.txt', 'w')
@@ -100,7 +100,14 @@ if __name__ == "__main__":
 		outfile.write(str(p))
 	outfile.close()
 	outfile = open('details.txt', 'w')
+	x = []
+	y = []
 	for p in details:
 		outfile.write("\nid: {}\nstart time: {}\nend time: {}\n".format(p[0], p[2] - p[1], p[2]))
+		x.append(p[2] - p[1])
+		y.append(p[0])
+		x.append(p[2])
+		y.append(p[0])
 	outfile.close()
-
+	plotter = ProcessesPlotter()
+	plotter.plot(x, y)

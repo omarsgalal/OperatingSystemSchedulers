@@ -22,7 +22,7 @@ def readProcesses(inputFileName):
 		currProcess=line.split()
 		if(len(currProcess)==1):
 			continue
-		x=process(int(currProcess[0]),int(currProcess[1]),int(currProcess[2]),int(currProcess[3]))
+		x=process(int(currProcess[0]),float(currProcess[1]),float(currProcess[2]),float(currProcess[3]))
 		processes.append(x)
 	return processes
 
