@@ -43,10 +43,15 @@ class HPF(Scheduler):
 			final_processes[-1].priority = max_priority - final_processes[-1].priority
 			self.current_processes = self.current_processes[1:]
 
+			if len(self.current_processes) == 0 and i < num_processes:
+				self.passed_time = self.processes[i].arrival
+
 			while i < num_processes and self.processes[i].arrival <= self.passed_time:
 				self.current_processes.append(self.processes[i])
 				self.current_processes[-1].priority = max_priority - self.current_processes[-1].priority
 				i += 1
+
+
 
 		return final_processes
 

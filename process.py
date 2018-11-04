@@ -7,6 +7,7 @@ class Process:
 		self.burst = burst
 		self.priority = priority
 		self.end = 0
+		self.remaining_time = burst
 
 
 	def get_waiting_time(self):
@@ -18,7 +19,7 @@ class Process:
 
 
 	def get_weighted_turnaround_time(self):
-		return self.get_turnaround_time / self.burst
+		return self.get_turnaround_time() / self.burst
 
 
 	def __str__(self):
