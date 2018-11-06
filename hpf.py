@@ -2,10 +2,11 @@ from scheduler import Scheduler
 from plotter import ProcessesPlotter
 
 class HPF(Scheduler):
-	def __init__(self):
+	def __init__(self, context_switch):
 		Scheduler.__init__(self)
 		self.passed_time = 0
 		self.current_processes = []
+		self.context_switch = context_switch
 
 	def get_max_priority(self):
 		return max(self.processes, key=lambda x:x.priority).priority
@@ -35,7 +36,8 @@ class HPF(Scheduler):
 			self.current_processes.sort(key = lambda x: x.id)
 			self.current_processes.sort(key = lambda x: x.priority)
 
-			self.passed_time += self.current_processes[0].burst
+
+			self.passed_time += self.current_processes[0].burst + self.context_switch
 			self.current_processes[0].end = self.passed_time
 			final_processes.append(self.current_processes[0])
 			final_processes[-1].priority = max_priority - final_processes[-1].priority
@@ -51,7 +53,7 @@ class HPF(Scheduler):
 
 
 if __name__ == "__main__":
-	hpf = HPF()
+	hpf = HPF(1)
 	hpf.read_processes()
 	processes = hpf.schedule()
 	outfile = open('scheduled_processes.txt', 'w')
