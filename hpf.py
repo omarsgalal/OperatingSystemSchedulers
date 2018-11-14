@@ -1,11 +1,12 @@
 from scheduler import Scheduler
-
+from plotter import ProcessesPlotter
 
 class HPF(Scheduler):
-	def __init__(self):
+	def __init__(self, context_switch):
 		Scheduler.__init__(self)
 		self.passed_time = 0
 		self.current_processes = []
+		self.context_switch = context_switch
 
 	def get_max_priority(self):
 		return max(self.processes, key=lambda x:x.priority).priority
@@ -21,35 +22,30 @@ class HPF(Scheduler):
 
 		max_priority = self.get_max_priority()
 
-		self.current_processes.append(self.processes[0])
-		self.current_processes[0].priority = max_priority - self.current_processes[0].priority
+		i = 0
 
-		i = 1
-		while i < num_processes and self.processes[i].arrival == self.processes[i-1].arrival:
-			self.current_processes.append(self.processes[i])
-			self.current_processes[-1].priority = max_priority - self.current_processes[-1].priority
-			i += 1
+		self.passed_time += self.processes[i].arrival
 
-		self.passed_time += self.current_processes[0].arrival
-
-		while len(self.current_processes) > 0:
-
-			self.current_processes.sort(key = lambda x: x.id)
-			self.current_processes.sort(key = lambda x: x.priority)
-
-			self.passed_time += self.current_processes[0].burst
-			self.current_processes[0].end = self.passed_time
-			final_processes.append(self.current_processes[0])
-			final_processes[-1].priority = max_priority - final_processes[-1].priority
-			self.current_processes = self.current_processes[1:]
-
-			if len(self.current_processes) == 0 and i < num_processes:
-				self.passed_time = self.processes[i].arrival
+		while i < num_processes or len(self.current_processes) > 0:
 
 			while i < num_processes and self.processes[i].arrival <= self.passed_time:
 				self.current_processes.append(self.processes[i])
 				self.current_processes[-1].priority = max_priority - self.current_processes[-1].priority
 				i += 1
+
+			self.current_processes.sort(key = lambda x: x.id)
+			self.current_processes.sort(key = lambda x: x.priority)
+
+
+			self.passed_time += self.current_processes[0].burst + self.context_switch
+			self.current_processes[0].end = self.passed_time
+			final_processes.append(self.current_processes[0])
+			final_processes[-1].priority = max_priority - final_processes[-1].priority
+			self.current_processes = self.current_processes[1:]
+
+
+			if len(self.current_processes) == 0 and i < num_processes and self.passed_time < self.processes[i].arrival:
+				self.passed_time = self.processes[i].arrival
 
 
 
@@ -57,10 +53,18 @@ class HPF(Scheduler):
 
 
 if __name__ == "__main__":
-	hpf = HPF()
+	hpf = HPF(1)
 	hpf.read_processes()
 	processes = hpf.schedule()
 	outfile = open('scheduled_processes.txt', 'w')
+	x = []
+	y = []
 	for p in processes:
 		outfile.write(str(p))
+		x.append(p.end - p.burst)
+		y.append(p.id)
+		x.append(p.end)
+		y.append(p.id)
+	plotter = ProcessesPlotter()
+	plotter.plot(x, y)
 	outfile.close()

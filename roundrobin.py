@@ -54,29 +54,25 @@ class RoundRobin(Scheduler):
 
 		self.processes.sort(key = lambda x: x.arrival)
 
-		self.current_processes.enqueue(self.processes[0])
+		i = 0
 
-		i = 1
-		while i < num_processes and self.processes[i].arrival == self.processes[i-1].arrival:
-			self.current_processes.enqueue(self.processes[i])
-			i += 1
+		self.passed_time = self.processes[0].arrival
 
-		self.passed_time += self.current_processes.front().arrival
+		while i < num_processes or len(self.current_processes) > 0:
 
-		while len(self.current_processes) > 0:
+			while i < num_processes and self.processes[i].arrival <= self.passed_time:
+				self.current_processes.enqueue(self.processes[i])
+				i += 1
 
 			time_taken = min(self.current_processes.front().remaining_time, self.quantum)
 			self.passed_time += time_taken
 			self.current_processes.queue[0].remaining_time -= time_taken
 			detailed_processing.append([self.current_processes.front().id, time_taken, self.passed_time])
 
-			if len(self.current_processes) == 0 and i < num_processes:
-				self.passed_time = self.processes[i].arrival
-				self.passed_time -= self.context_switching
-
 			while i < num_processes and self.processes[i].arrival <= self.passed_time:
 				self.current_processes.enqueue(self.processes[i])
 				i += 1
+
 
 			if self.current_processes.front().remaining_time > 0:
 				self.current_processes.rotate()
@@ -86,6 +82,10 @@ class RoundRobin(Scheduler):
 				final_processes.append(process)
 
 			self.passed_time += self.context_switching
+
+			if len(self.current_processes) == 0 and i < num_processes and self.passed_time < self.processes[i].arrival:
+				self.passed_time = self.processes[i].arrival
+				self.passed_time -= self.context_switching
 
 		return final_processes, detailed_processing
 
