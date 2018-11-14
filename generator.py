@@ -21,8 +21,8 @@ class Generator:
 		num_processes, arrival_params, burst_params, priority_params = self.read_input(input_path)
 		processes = []
 		for i in range(num_processes):
-			arrival_time = np.random.normal(arrival_params[0], arrival_params[1])
-			burst_time = np.random.normal(burst_params[0], burst_params[1])
+			arrival_time = np.around(np.abs(np.random.normal(arrival_params[0], arrival_params[1])), 1)
+			burst_time = np.around(np.abs(np.random.normal(burst_params[0], burst_params[1])), 1)
 			priority = np.random.poisson(priority_params)
 			processes.append(Process(i+1, arrival_time, burst_time, priority))
 		self.out_processes(processes, output_path)
