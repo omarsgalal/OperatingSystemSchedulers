@@ -14,6 +14,7 @@ from roundrobin import RoundRobin
 from output import Output
 import matplotlib.pyplot as plt
 from generatorDialog import GeneratorDialog
+import os
 
 
 
@@ -50,10 +51,12 @@ def runAlgorithm(inputFileName,outputFileName,quantumTimeEntry,contextSwitchingT
 				messagebox.showinfo("Error","Please Enter a valid positive quantum")
 				return
 
-		'''if((not(quantumTimeEntry.isdigit()) or quantumTimeEntry=="" )and selectedAlgorithm=="RR"):
-			messagebox.showinfo("Error","Please Enter a positive quantum Time ")
-			return'''
+		exists = os.path.isfile(inputFileName)
+ 		
 
+		if not(exists):
+			messagebox.showinfo("Error","Input file doesn't exist")
+			return	
 
 		if selectedAlgorithm == "HPF":
 			sched = HPF(contextSwitchTime)
