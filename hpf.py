@@ -17,6 +17,7 @@ class HPF(Scheduler):
 			return []
 
 		final_processes = []
+		detailedOutput=[]
 
 		self.processes.sort(key = lambda x: x.arrival)
 
@@ -37,6 +38,7 @@ class HPF(Scheduler):
 			self.current_processes.sort(key = lambda x: x.priority)
 
 
+			detailedOutput.append([self.current_processes[0].id,self.passed_time,self.current_processes[0].burst+self.passed_time])
 			self.passed_time += self.current_processes[0].burst + self.context_switch
 			self.current_processes[0].end = self.passed_time
 			final_processes.append(self.current_processes[0])
@@ -49,7 +51,7 @@ class HPF(Scheduler):
 
 
 
-		return final_processes
+		return final_processes,detailedOutput
 
 
 if __name__ == "__main__":

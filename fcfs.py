@@ -7,7 +7,6 @@ class FCFS(Scheduler):
 		self.passed_time = 0
 		self.contextTime=contextTime
 	def schedule(self):
-		print("schedule")
 		outputProccesses=[]
 		detailedOutput=[]
 		if(len(self.processes)==0):

@@ -65,9 +65,10 @@ class RoundRobin(Scheduler):
 				i += 1
 
 			time_taken = min(self.current_processes.front().remaining_time, self.quantum)
+			detailed_processing.append([self.current_processes.front().id, self.passed_time, self.passed_time+time_taken])
 			self.passed_time += time_taken
 			self.current_processes.queue[0].remaining_time -= time_taken
-			detailed_processing.append([self.current_processes.front().id, time_taken, self.passed_time])
+			
 
 			while i < num_processes and self.processes[i].arrival <= self.passed_time:
 				self.current_processes.enqueue(self.processes[i])
@@ -95,7 +96,7 @@ if __name__ == "__main__":
 	roundrobin = RoundRobin(5, 3)
 	roundrobin.read_processes()
 	processes, details = roundrobin.schedule()
-	outfile = open('scheduled_processes.txt', 'w')
+	outfile = open(roundrobin.outputFileName, 'w')
 	for p in processes:
 		outfile.write(str(p))
 	outfile.close()

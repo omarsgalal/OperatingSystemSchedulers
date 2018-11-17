@@ -20,9 +20,9 @@ class SRTN(Scheduler):
 
 		self.processes.sort(key = lambda x: x.arrival)
 
-		self.passed_time = self.processes[0].arrival
+		#self.passed_time = self.processes[0].arrival
 
-		previous_id = -1
+		previous_id = self.processes[0].id
 		i=0
 		if(numProcesses==0):
 			return [],[]
@@ -30,26 +30,31 @@ class SRTN(Scheduler):
 			#add elements that recently arrived in the list
 			while(i<numProcesses and self.processes[i].arrival<=self.passed_time):
 				currentProcesses.append(self.processes[i])
-				#print(i)
 				i+=1
 
-			if len(currentProcesses)==0:
+			if len(currentProcesses)==0 and self.passed_time < self.processes[i].arrival:
 				self.passed_time = self.processes[i].arrival
 				continue
 			
 
 			currentProcesses.sort(key = lambda x:x.remaining_time)
-			if i==numProcesses:
+
+			if previous_id != currentProcesses[0].id:
+				self.passed_time += self.contextSwitching
+				previous_id = currentProcesses[0].id
+				continue
+
+
+			if i == numProcesses:
 				currentStep=currentProcesses[0].remaining_time
 			else:	
 				currentStep=min(currentProcesses[0].remaining_time, self.processes[i].arrival - self.passed_time)
+
+
 			currentProcesses[0].remaining_time -= currentStep
-			detailedOutput.append([currentProcesses[0].id,self.passed_time,currentStep])
+			detailedOutput.append([currentProcesses[0].id, self.passed_time, currentStep+self.passed_time])
 			self.passed_time += currentStep
 
-			if   previous_id != currentProcesses[0].id:
-				self.passed_time += self.contextSwitching
-				previous_id = currentProcesses[0].id
 			
 			if(currentProcesses[0].remaining_time==0):
 				currentProcesses[0].end = self.passed_time
@@ -58,14 +63,24 @@ class SRTN(Scheduler):
 				numProcessesLeft-=1
 				#print(numProcessesLeft)
 
+		new_detailed_output = []
+		new_detailed_output.append(detailedOutput[0])
+		j = 0
+		i = 1
+		while i < len(detailedOutput):
+			if new_detailed_output[-1][0] == detailedOutput[i][0]:
+				new_detailed_output[-1][-1] = detailedOutput[i][-1]
+			else:
+				new_detailed_output.append(detailedOutput[i])
+			i += 1
 			
-		return detailedOutput,outputProcesses	
+		return outputProcesses,new_detailed_output	
 
 if __name__ == "__main__":
 	srtn = SRTN(0)
 	srtn.read_processes()
 	detailedOutput,processes = srtn.schedule()
-	outfile = open('scheduled_processes.txt', 'w')
+	outfile = open("SCHEDULED output", 'w')
 	for p in processes:
 		#print(p)
 		outfile.write(str(p))
