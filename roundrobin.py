@@ -24,7 +24,10 @@ class CircularQueue:
 
 
 	def front(self):
-		return self.queue[0]
+		if len(self.queue) > 0 :
+			return self.queue[0]
+		else:
+			return None
 
 
 	def back(self):
@@ -84,19 +87,20 @@ class RoundRobin(Scheduler):
 
 			self.passed_time += self.context_switching
 
+
 			if len(self.current_processes) == 0 and i < num_processes and self.passed_time < self.processes[i].arrival:
 				self.passed_time = self.processes[i].arrival
-				self.passed_time -= self.context_switching
+				#self.passed_time -= self.context_switching
 
 		return final_processes, detailed_processing
 
 
 
 if __name__ == "__main__":
-	roundrobin = RoundRobin(5, 3)
-	roundrobin.read_processes()
+	roundrobin = RoundRobin(2.2, 0.8)
+	roundrobin.read_processes('processes.txt')
 	processes, details = roundrobin.schedule()
-	outfile = open(roundrobin.outputFileName, 'w')
+	outfile = open('a.txt', 'w')
 	for p in processes:
 		outfile.write(str(p))
 	outfile.close()

@@ -40,7 +40,7 @@ class HPF(Scheduler):
 
 			detailedOutput.append([self.current_processes[0].id,self.passed_time,self.current_processes[0].burst+self.passed_time])
 			self.passed_time += self.current_processes[0].burst + self.context_switch
-			self.current_processes[0].end = self.passed_time
+			self.current_processes[0].end = self.passed_time - self.context_switch
 			final_processes.append(self.current_processes[0])
 			final_processes[-1].priority = max_priority - final_processes[-1].priority
 			self.current_processes = self.current_processes[1:]
