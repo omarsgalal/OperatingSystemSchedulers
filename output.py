@@ -1,4 +1,4 @@
-import numpy as np
+from numpy import round
 
 class Output(object):
 	"""docstring for Output"""
@@ -20,8 +20,8 @@ class Output(object):
 		avg_turnaround /= len(self.processes)
 		avg_weighted_turaround /= len(self.processes)
 
-		avg_turnaround = np.round(avg_turnaround, 2)
-		avg_weighted_turaround = np.round(avg_weighted_turaround, 2)
+		avg_turnaround = round(avg_turnaround, 2)
+		avg_weighted_turaround = round(avg_weighted_turaround, 2)
 
 		outfile.write("\n\nAverage Turnaround Time = {}\n".format(avg_turnaround))
 		outfile.write("Average Weighted Turnaround Time = {}\n".format(avg_weighted_turaround))

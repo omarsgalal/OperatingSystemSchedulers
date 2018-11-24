@@ -1,4 +1,5 @@
-import numpy as np
+from numpy.random import normal, poisson
+from numpy import abs, round
 from process import Process
 
 class Generator:
@@ -21,9 +22,9 @@ class Generator:
 		num_processes, arrival_params, burst_params, priority_params = self.read_input(input_path)
 		processes = []
 		for i in range(num_processes):
-			arrival_time = np.around(np.abs(np.random.normal(arrival_params[0], arrival_params[1])), 1)
-			burst_time = np.around(np.abs(np.random.normal(burst_params[0], burst_params[1])), 1)
-			priority = np.random.poisson(priority_params)
+			arrival_time = round(abs(normal(arrival_params[0], arrival_params[1])), 2)
+			burst_time = round(abs(normal(burst_params[0], burst_params[1])), 2)
+			priority = poisson(priority_params)
 			processes.append(Process(i+1, arrival_time, burst_time, priority))
 		self.out_processes(processes, output_path)
 		return processes

@@ -48,6 +48,9 @@ class RoundRobin(Scheduler):
 
 
 	def schedule(self):
+		if self.quantum == 0:
+			return
+			
 		num_processes = len(self.processes)
 		if num_processes == 0 or self.quantum == 0:
 			return [], []

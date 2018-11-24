@@ -1,6 +1,6 @@
 from generator import Generator
 import os
-from tkinter import *
+from tkinter import Toplevel, Frame, Label, Entry, Button
 
 
 class GeneratorDialog:
@@ -43,6 +43,4 @@ class GeneratorDialog:
 		 	
 
 	def cancel(self):
-		self.top.destroy()  	
-
-
+		self.top.destroy()

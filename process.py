@@ -1,4 +1,4 @@
-import numpy as np
+from numpy import round
 
 class Process:
 	def __init__(self, idd, arrival, burst, priority):
@@ -11,16 +11,16 @@ class Process:
 
 
 	def get_waiting_time(self):
-		return np.round(self.end - (self.arrival + self.burst), 2)
+		return round(self.end - (self.arrival + self.burst), 2)
 
 
 	def get_turnaround_time(self):
-		return np.round(self.end - self.arrival, 2)
+		return round(self.end - self.arrival, 2)
 
 
 	def get_weighted_turnaround_time(self):
-		return np.round(self.get_turnaround_time() / self.burst, 2)
+		return round(self.get_turnaround_time() / self.burst, 2)
 
 
 	def __str__(self):
-		return "\nid: {}\narrival time: {}\nburst time: {}\npriority: {}\nend time: {}\nwaiting time: {}\nturnaround time: {}\nweighted turnaround time: {}\n".format(self.id, self.arrival, self.burst, self.priority, np.round(self.end, 2), self.get_waiting_time(), self.get_turnaround_time(), self.get_weighted_turnaround_time())
+		return "\nid: {}\narrival time: {}\nburst time: {}\npriority: {}\nend time: {}\nwaiting time: {}\nturnaround time: {}\nweighted turnaround time: {}\n".format(self.id, self.arrival, self.burst, self.priority, round(self.end, 2), self.get_waiting_time(), self.get_turnaround_time(), self.get_weighted_turnaround_time())
